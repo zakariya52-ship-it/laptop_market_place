@@ -1,0 +1,133 @@
+cleaning:
+  target_column: "Price"
+  outlier_rate_threshold: 0.01
+  outlier_iqr_multiplier: 1.5
+  outlier_lower_quantile: 0.25
+  outlier_upper_quantile: 0.75
+  winsor_lower_quantile: 0.01
+  winsor_upper_quantile: 0.99
+  index_columns:
+    - "Unnamed: 0"
+  excluded_storage_categories:
+    - "no data"
+    - "no_data"
+  ram_column_token: "ram"
+  storage_column_tokens:
+    - "storage"
+    - "ssd"
+    - "hdd"
+  excluded_storage_columns:
+    - "storage_type"
+    - "storage_category"
+  storage_category_column: "Storage_Category"
+
+parsing:
+  storage_pattern: "([\\d.]+)\\s*(tb|gb)?"
+  ram_pattern: "([\\d.]+)\\s*gb"
+  storage_default_unit: "gb"
+  storage_tb_unit: "tb"
+  storage_tb_multiplier: 1024
+  empty_text: ""
+  unknown_text: "unknown"
+  whitespace_pattern: "\\s+"
+  text_whitespace_replacement: "_"
+
+features:
+  raw_feature_columns:
+    - "Company"
+    - "TypeName"
+    - "Inches"
+    - "ScreenResolution"
+    - "Cpu"
+    - "Gpu"
+    - "OpSys"
+    - "TouchScreen"
+    - "Ips"
+    - "X_res"
+    - "Y_res"
+    - "ppi"
+    - "Dedicated_Gpu"
+    - "Ram_GB"
+    - "Weight_kg"
+    - "SSD"
+    - "HHD"
+    - "Storage_Type"
+    - "Total_Storage_GB"
+    - "Storage_Category"
+  numerical_features:
+    - "Inches"
+    - "TouchScreen"
+    - "Ips"
+    - "X_res"
+    - "Y_res"
+    - "ppi"
+    - "Dedicated_Gpu"
+    - "Ram_GB"
+    - "Weight_kg"
+    - "SSD"
+    - "HHD"
+    - "Total_Storage_GB"
+    - "Is_Premium_Tier"
+    - "Is_AI_Ready"
+  categorical_features:
+    - "Company"
+    - "ScreenResolution"
+    - "Gpu"
+    - "OpSys"
+    - "Storage_Type"
+    - "Gpu_brand"
+    - "Cpu_Brand"
+    - "Storage_performance"
+    - "Laptop_Series"
+  drop_columns:
+    - "TypeName"
+    - "Cpu"
+    - "Storage_Category"
+  premium_pattern: "prestige|pro|elitebook|thinkpad|xps|spectre"
+  ai_ready_pattern: "ai\\+"
+  laptop_series_word_count: 2
+  derived_columns:
+    gpu_brand: "Gpu_brand"
+    cpu_brand: "Cpu_Brand"
+    storage_performance: "Storage_performance"
+    premium_tier: "Is_Premium_Tier"
+    ai_ready: "Is_AI_Ready"
+    laptop_series: "Laptop_Series"
+  gpu_brand_keywords:
+    nvidia: "nvidia"
+    intel: "intel"
+    amd: "amd"
+    qualcomm: "qualcomm"
+  cpu_brand_pattern: "(intel core i\\d|intel core ultra \\d|amd ryzen ai \\d|amd ryzen \\d|amd athlon \\w+|intel celeron|intel pentium)"
+  storage_performance_keywords:
+    very_high: "very_high"
+    high: "high"
+    standard: "standard"
+    basic: "basic"
+    minimal: "minimal"
+
+model:
+  test_size: 0.2
+  random_state: 42
+  algorithm: "catboost"
+  hyperparameters:
+    iterations: 800
+    learning_rate: 0.08
+    depth: 6
+    loss_function: "RMSE"
+    verbose: false
+    random_seed: 42
+  fallback:
+    algorithm: "random_forest"
+    hyperparameters:
+      n_estimators: 300
+      max_depth: 12
+      random_state: 42
+      n_jobs: -1
+
+preprocessing:
+  scaler: "standard"
+  encoder: "one_hot"
+  encoder_handle_unknown: "ignore"
+  encoder_sparse_output: false
+  imputer_strategy: "median"

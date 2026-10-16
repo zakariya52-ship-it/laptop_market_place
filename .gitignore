@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.streamlit/
+venv/
+.github/
+ml_pipeline/data/**/*.csv
+tests
+catboost_info
